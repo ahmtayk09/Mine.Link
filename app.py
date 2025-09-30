@@ -4,16 +4,17 @@ import os, sqlite3, string, random
 # .env dosyasını yükle
 load_dotenv()
 
+db_path = os.path.join("/tmp", "urls.db")
+
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")  # .env'den al
-DATABASE_URL = os.getenv("DATABASE_URL")  # Veritabanı yolu .env'den alınıyor
 
 def generate_short_code(length=6):
     chars = string.ascii_letters + string.digits
     return ''.join(random.choice(chars) for _ in range(length))
 
 # Veritabanı oluştur
-conn = sqlite3.connect(DATABASE_URL)
+conn = sqlite3.connect(db_path)
 c = conn.cursor()
 c.execute("""
     CREATE TABLE IF NOT EXISTS urls (
