@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Kısaltıldı!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>URL Kısaltıldı!</h1>
+
+        <!-- Sonuç Kutusu -->
+        <div class="result-card">
+            <input type="text" value="{{ short_url }}" id="shortUrl" readonly class="full-width">
+            <button class="full-width" onclick="copyURL()">
+                Kopyala <i class="fa fa-copy"></i>
+            </button>
+        </div>
+
+        <!-- Yeni Link Butonu -->
+        <a href="/"><button class="full-width new-link-button">Yeni URL Kısalt</button></a>
+    </div>
+
+    <script>
+        function copyURL() {
+            const copyText = document.getElementById("shortUrl");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            alert("Kopyalandı: " + copyText.value);
+        }
+    </script>
+</body>
+</html>
