@@ -1,12 +1,11 @@
-from flask import Flask, render_template, request, redirect, abort, session
-import sqlite3, string, random, os
 from dotenv import load_dotenv
-
+from flask import Flask, render_template, request, redirect, abort, session
+import os, sqlite3, string, random
 # .env dosyasını yükle
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY")  # Secret key .env'den alınıyor
+app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")  # .env'den al
 DATABASE_URL = os.getenv("DATABASE_URL")  # Veritabanı yolu .env'den alınıyor
 
 def generate_short_code(length=6):
@@ -80,4 +79,5 @@ def page_not_found(e):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    # Debug kapalı, local test için
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8080)), debug=False)
