@@ -1,13 +1,15 @@
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, abort, session
 import os, sqlite3, string, random
+
 # .env dosyasını yükle
 load_dotenv()
 
-db_path = os.path.join("/tmp", "urls.db")
+# Veritabanı yolu (Render'da kalıcı değilse /tmp, localde urls.db)
+db_path = os.getenv("DATABASE_URL", os.path.join(os.getcwd(), "urls.db"))
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")  # .env'den al
+app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")  # Secret key .env'den al
 
 def generate_short_code(length=6):
     chars = string.ascii_letters + string.digits
@@ -31,7 +33,7 @@ def index():
     if request.method == "POST":
         long_url = request.form["long_url"]
 
-        conn = sqlite3.connect(DATABASE_URL)
+        conn = sqlite3.connect(db_path)
         c = conn.cursor()
 
         # Yeni short code üret
@@ -62,7 +64,7 @@ def result():
 
 @app.route("/<short_code>")
 def redirect_to_url(short_code):
-    conn = sqlite3.connect(DATABASE_URL)
+    conn = sqlite3.connect(db_path)
     c = conn.cursor()
     c.execute("SELECT long_url FROM urls WHERE short_code = ?", (short_code,))
     row = c.fetchone()
@@ -80,5 +82,5 @@ def page_not_found(e):
 
 
 if __name__ == "__main__":
-    # Debug kapalı, local test için
+    # Debug kapalı, production için uygun
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8080)), debug=False)
